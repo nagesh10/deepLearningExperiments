@@ -1,0 +1,7 @@
+myKerasNN.py
+importStuffLoadData.py
+404
+1644
+nOfTrainImages = 1024
+nOfValImages = 512
+nOfTestImages = 512

@@ -1,0 +1,24 @@
+myKerasSmallNN_WithSVM_2classes.py
+importStuffLoadData.py
+emptyImagesPath=/home/gor/projects/vikram/2016_11_03/EMPTY/
+betweenImagesPath=/home/gor/projects/vikram/2016_11_03/BETWEEN/
+439
+2046
+nOfTrainImages = 1242
+nOfValImages = 621
+nOfTestImages = 622
+trainData loaded
+valData loaded
+testData loaded
+loaded all data.
+model loaded.
+subModel created
+activations from subModel calculated
+SVM fitted
+SVM model saved as mySVMmodel_2classes_20161107_221449.pkl
+Training accuracy = 
+0.0
+Validation accuracy = 
+0.0112721417069
+Test data accuracy = 
+0.0112540192926

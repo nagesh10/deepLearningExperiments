@@ -1,0 +1,20 @@
+myKerasSmallNNWithSVM.py
+importStuffLoadData.py
+439
+2046
+nOfTrainImages = 1242
+nOfValImages = 621
+nOfTestImages = 622
+trainData loaded
+valData loaded
+testData loaded
+loaded all data.
+model loaded.
+SVM fitted
+SVM model saved as mySVMmodel_20161107_173603.pkl
+Training accuracy = 
+1.0
+Validation accuracy = 
+0.988727858293
+Test data accuracy = 
+0.988745980707
