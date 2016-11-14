@@ -1,22 +1,10 @@
 print "importStuffLoadData.py"
 
-import cv2
 import numpy as np
 import os
-import time
-
-import matplotlib
-#matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-
-from keras.models import Sequential, load_model
-from keras.optimizers import SGD
-from keras.layers import Dense
-from keras.layers import Reshape, Convolution2D, MaxPooling2D
-from keras.layers import Activation, Dropout, Flatten, Dense
-from keras.utils import np_utils
 
 from sklearn.preprocessing import LabelEncoder
+from scipy.misc import imresize as imresize
 
 #return [imRows, imCols, trainData, valData, testData, fullTestImages]
 def loadData (nbClasses, date, norm0to1=True):
@@ -211,7 +199,7 @@ def loadData (nbClasses, date, norm0to1=True):
     return (imRows, imCols, imChannels, trainData, valData, testData, fullTestImages)
 
 
-def calcCrossEntropy(testImages, testPreds, nbBins):
+def calcCrossEntropy(testImages, testPreds, nbBins=12):
 
     # testImages & testPreds should be of same size
     # testImages & testPreds must have values between 0&1
@@ -240,12 +228,39 @@ def calcCrossEntropy(testImages, testPreds, nbBins):
     return testEntropies
 
 
+# images is an ndarray of min. 2 dimensions
 def resizeImages(images, imRows, imCols):
+    
+    print "resizing..."
 
-    # images is an ndarray of min. 2 dimensions
-    if (images.ndim==2):
+    # image : rows x cols
+    if (images.ndim==2): 
+        newImage = np.zeros((imRows, imCols))
         newImage = imresize(images, (imRows, imCols))/255.0
         return newImage
+    
+    # image : rows x cols x channels
+    elif (images.ndim==3):
+        newImages = np.zeros((imRows, imCols, images.shape[2]))
+        for ch in range(images.shape[2]):
+            newImage[:,:,ch] = imresize(images[:,:,ch], (imRows, imCols))/255.0
+        
+        print "ndims 3"
+        return newImages
+    
+    # image : nOfImages x rows x cols x channels
+    elif (images.ndim==4):
+        newImages = np.zeros((images.shape[0], imRows, imCols, images.shape[3]))
+        for i in range(images.shape[0]):
+            for ch in range(images.shape[3]):
+                newImages[i,:,:,ch] = imresize(images[i,:,:,ch], (imRows, imCols))/255.0
+        
+        print "ndims 4"
+        return newImages
+    
+    else:
+        print "image dimensions not 2, 3 or 4"
+        return False
 
 
 def KLT(images):

@@ -11,9 +11,7 @@ np.random.seed(seed)
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-import pickle
 from pylab import text
-from scipy.misc import imresize as imresize
 import sys
 import time
 
@@ -22,8 +20,7 @@ from keras.layers import Dense, Convolution2D, MaxPooling2D, UpSampling2D
 from sklearn.metrics import mean_squared_error
 
 sys.path.append(modelsPath)
-from importStuffLoadData import loadData
-from importStuffLoadData import calcCrossEntropy
+from importStuffLoadData import *
 
 # Save time
 timeStr = time.strftime('%Y%m%d_%H%M%S')
@@ -31,6 +28,9 @@ timeStr = time.strftime('%Y%m%d_%H%M%S')
 nbClasses = 1
 #date = '2016_08_19'
 date = '2016_11_03'
+
+# for entropies
+nbBins = 12
 
 [origImRows, origImCols, origImChannels, (trainImages, trainResults), (valImages, valResults), (testImages, testResults), fullTestImages] = loadData(nbClasses, date)
 
@@ -44,20 +44,9 @@ imRows = 64
 imCols = 64
 imChannels = 1
 
-newTrainImages = np.zeros((trainImages.shape[0], imRows, imCols, imChannels))
-for i in range(trainImages.shape[0]):
-	newTrainImages[i] = imresize(trainImages[i].reshape(origImRows, origImCols, origImChannels), (imRows, imCols, imChannels))/255.0
-
-
-newValImages = np.zeros((valImages.shape[0], imRows, imCols, 1))
-for i in range(valImages.shape[0]):
-	newValImages[i] = imresize(valImages[i].reshape(origImRows, origImCols, origImChannels), (imRows, imCols, imChannels))/255.0
-
-
-newTestImages = np.zeros((testImages.shape[0], imRows, imCols, 1))
-for i in range(testImages.shape[0]):
-	newTestImages[i] = imresize(testImages[i].reshape(origImRows, origImCols, origImChannels), (imRows, imCols, imChannels))/255.0
-
+newTrainImages = resizeImages(trainImages, imRows, imCols)
+newValImages = resizeImages(valImages, imRows, imCols)
+newTestImages = resizeImages(testImages, imRows, imCols)
 
 # create model
 #Autoencoder
@@ -98,13 +87,10 @@ autoencoder.save(modelName)
 print "model saved."
 
 '''
-# Load the model
-modelName = modelsPath + 'myKerasSmallNNModel_autoencoder_2layers_20161112_184710.h5'
-autoencoder = load_model(modelName)
+# Load the modela
 '''
 
 # FINDING RANGE OF ENTROPIES
-nbBins = 12
 
 # calc entropy for train
 trainPreds = autoencoder.predict(newTrainImages)
@@ -138,20 +124,22 @@ maxEntropy = np.array([trainEntropies.max(), valEntropies.max(), testEntropies.m
 minEntropy = -2.62555459586
 maxEntropy = -1.87461698778
 
-# Full test
+# TESTING
 
 [origImRows, origImCols, origImChannels, (trainImages, trainResults), (valImages, valResults), (testImages, testResults), fullTestImages] = loadData(2, date)
+newTrainImages = resizeImages(trainImages, imRows, imCols)
+newValImages = resizeImages(valImages, imRows, imCols)
+newTestImages = resizeImages(testImages, imRows, imCols)
 
+# train
 trainPreds = autoencoder.predict(newTrainImages)
 trainEntropies = calcCrossEntropy(newTrainImages, trainPreds, nbBins)
 
 trainClass = trainEntropies>=minEntropy and trainEntropies<=maxEntropy
 
+# full test
 
-newFullTestImages = np.zeros((fullTestImages.shape[0], imRows, imCols, imChannels))
-for i in range(fullTestImages.shape[0]):
-	newFullTestImages[i] = imresize(fullTestImages[i].reshape(fullTestImages.shape[2], fullTestImages.shape[3]), (imRows, imCols, imChannels))/255.0
-
+newFullTestImages = resizeImages(fullTestImages)
 fullTestPreds = autoencoder.predict(newFullTestImages)
 
 fullTestEntropies = calcCrossEntropy(newFullTestImages, fullTestPreds)
