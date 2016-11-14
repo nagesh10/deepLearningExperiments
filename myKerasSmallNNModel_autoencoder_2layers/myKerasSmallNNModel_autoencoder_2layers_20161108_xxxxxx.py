@@ -1,6 +1,7 @@
-print "myKerasSmallNN_autoencoder_2layersr.py"
-basePath = '/home/gor/projects/vikram/myKerasNN/myKerasSmallNNModel_autoencoder_2layers'
-modelsPath = '/home/gor/projects/vikram/myKerasNN/MODELS/'
+# Make sure to run the code from same directory itself,
+# like :       python myKerasSmallNN_autoencoder_2layers_xxxxxx_xxxxxx.py
+# instead of : python /projects/myKerasNN/myKerasSmallNN_autoencoder_2layers.py
+print "myKerasSmallNN_autoencoder_2layers.py"
 
 import numpy as np
 
@@ -9,18 +10,25 @@ seed = 7
 np.random.seed(seed)
 
 import os
-import numpy as np
-import matplotlib.pyplot as plt
-from pylab import text
 import sys
 import time
 
+# Paths
+basePath = os.getcwd()
+modelsPath = basePath + '/../MODELS'
+
+# import stuff
+sys.path.append(modelsPath)
+from importStuffLoadData import *
+
+# for plotting
+import matplotlib.pyplot as plt
+from pylab import text
+
+# keras
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Convolution2D, MaxPooling2D, UpSampling2D
 from sklearn.metrics import mean_squared_error
-
-sys.path.append(modelsPath)
-from importStuffLoadData import *
 
 # Save time
 timeStr = time.strftime('%Y%m%d_%H%M%S')
@@ -87,7 +95,9 @@ autoencoder.save(modelName)
 print "model saved."
 
 '''
-# Load the modela
+# Load the model
+modelName = modelsPath + '/myKerasSmallNNModel_autoencoder_2layers_20161112_184710.h5'
+autoencoder = load_model(modelName)
 '''
 
 # FINDING RANGE OF ENTROPIES
@@ -109,7 +119,7 @@ valEntropies = calcCrossEntropy(newValImages, valPreds, nbBins)
 
 # predict, calc entropy for test
 testPreds = autoencoder.predict(newTestImages)
-testEntropies = calcCrossEntropy(testImages, testPreds, nbBins)
+testEntropies = calcCrossEntropy(newTestImages, testPreds, nbBins)
 
 
 # Entropies
@@ -135,30 +145,39 @@ newTestImages = resizeImages(testImages, imRows, imCols)
 trainPreds = autoencoder.predict(newTrainImages)
 trainEntropies = calcCrossEntropy(newTrainImages, trainPreds, nbBins)
 
-trainClass = trainEntropies>=minEntropy and trainEntropies<=maxEntropy
+trainClass = ((trainEntropies>=minEntropy) & (trainEntropies<=maxEntropy)).astype(int)
+
+trainClassAccuracy = ((trainClass==trainResults).astype(int).sum())/float(trainClass.shape[0])
 
 # full test
 
-newFullTestImages = resizeImages(fullTestImages)
-fullTestPreds = autoencoder.predict(newFullTestImages)
+newFullTestImages = resizeImages(fullTestImages, imRows, imCols)
+fullTestPreds = autoencoder.predict(newFullTestImages, imRows, imCols)
 
 fullTestEntropies = calcCrossEntropy(newFullTestImages, fullTestPreds)
+fulltestClass = ((fullTestEntropies>=minEntropy) & (fullTestEntropies<=maxEntropy)).astype(int)
+
+fullTestClassAccuracy = ((fulltestClass==trainResults).astype(int).sum())/float(trainClass.shape[0])
+
+print
 
 for i in range(fullTestEntropies.shape[0]):
-	plt.imshow(fullTestImages[i].reshape(origImRows, origImCols), cmap='gray')
-	rangeText = "Entropy range : " + minEntropy.astype(str) + " ---- " + maxEntropy.astype(str)
-	text(16, 16, rangeText, color='black', fontsize=20)
-	text(15, 15, rangeText, color='white', fontsize=20)
-	iEntropyText = fullTestEntropies[i].astype(str)
-	text(16, 31, iEntropyText, color='black', fontsize=20)
-	text(15, 30, iEntropyText, color='white', fontsize=20)
-	plt.show()
-
-for i in range(fullTestPreds.shape[0]):
-	plotImage = np.concatenate((newFullTestImages[i].reshape(imRows, imCols), fullTestPreds[i].reshape(imRows, imCols)), axis=1)
-	plt.imshow(plotImage, cmap='gray')
-	plt.show()
-
+    #plotImage = fullTestImages[i].reshape(origImRows, origImCols)
+    plotImage = np.concatenate((newFullTestImages[i].reshape(imRows, imCols), fullTestPreds[i].reshape(imRows, imCols)), axis=1)
+    plt.imshow(plotImage, cmap='gray')
+    rangeText = "Entropy range : " + str(minEntropy) + " ---- " + str(maxEntropy)
+    text(2, 2, rangeText, color='black', fontsize=20)
+    text(2.5, 2.5, rangeText, color='white', fontsize=20)
+    iEntropyText = fullTestEntropies[i].astype(str)
+    text(2, 10, iEntropyText, color='black', fontsize=20)
+    text(2.5, 10.5, iEntropyText, color='white', fontsize=20)
+    if (fullTestEntropies[i]>=minEntropy)&(fullTestEntropies[i]<=maxEntropy) :
+        state='EMPTY_CASKET'
+    else:
+        state='NOT Empty_casket'
+    text(2, 18, state, color='black', fontsize=20)
+    text(2.5, 18.5, state, color='white', fontsize=20)
+    plt.show()
 
 '''
 from keras.datasets import mnist
