@@ -57,8 +57,8 @@ def loadData (nbClasses, date, norm0to1=True):
         nOfValImages += len(valBetweenImages)
     print "nOfValImages = " + str(nOfValImages)
 
-    testEmptyImages = emptyImages[len(emptyImages)*3/4:]
-    testBetweenImages = betweenImages[len(betweenImages)*3/4:]
+    testEmptyImages = emptyImages[len(emptyImages)*3/4:-1]
+    testBetweenImages = betweenImages[len(betweenImages)*3/4:-1]
     nOfTestImages = len(testEmptyImages)
     if nbClasses>1:
         nOfTestImages += len(testBetweenImages)
@@ -183,6 +183,7 @@ def loadData (nbClasses, date, norm0to1=True):
         if '.bmp' not in i:
             fullImages.remove(i)
 
+    fullImages = fullImages[:-1]
     fullTestImages = np.zeros((len(fullImages), imRows, imCols, imChannels))
     os.chdir(fullImagesPath)
     count = 0
