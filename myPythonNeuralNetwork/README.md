@@ -11,7 +11,8 @@ Here, alpha = learning rate of gradient descent, regLambda = regularization para
 from myPyNN import *
 X = [0, 0.5, 1]
 y = [0, 0.5, 1]
-myNN = MyPyNN(1, 1, 1, 1)```
+myNN = MyPyNN(1, 1, 1, 1)
+```
 Input Layer    : 1-dimensional (Eg: X)
 1 Hidden Layer : 1-dimensional
 Output Layer   : 1-dimensional (Eg. y)
@@ -40,6 +41,7 @@ print myNN.predict(X)
 
 ## Example 3
 
+```
 X = [[2,2,2], [3,3,3], [4,4,4], [5,5,5], [6,6,6], [7,7,7], [8,8,8], [9,9,9], [10,10,10], [11,11,11]]
 y = [.2, .3, .4, .5, .6, .7, .8, .9, 0, .1]
 myNN = MyPyNN(3, 3, [10, 10, 5], 0.9, 0.5)
