@@ -14,8 +14,11 @@ y = [0, 0.5, 1]
 myNN = MyPyNN(1, 1, 1, 1)
 ```
 Input Layer    : 1-dimensional (Eg: X)
+
 1 Hidden Layer : 1-dimensional
+
 Output Layer   : 1-dimensional (Eg. y)
+
 Learning Rate  : 0.05 (default)
 ``` 
 print myNN.predict(0.2)
@@ -29,8 +32,11 @@ y = [0, 1]
 myNN = MyPyNN(2, 1, 3, 1, 0.8)
 ```
 Input Layer    : 2-dimensional (Eg: X)
+
 1 Hidden Layer : 3-dimensional
+
 Output Layer   : 1-dimensional (Eg. y)
+
 Learning rate  : 0.8
 ``` 
 print myNN.predict(X)
@@ -47,9 +53,13 @@ y = [.2, .3, .4, .5, .6, .7, .8, .9, 0, .1]
 myNN = MyPyNN(3, 3, [10, 10, 5], 0.9, 0.5)
 ```
 Input Layer    : 3-dimensional (Eg: X)
+
 3 Hidden Layers: 10-dimensional, 10-dimensional, 5-dimensional
+
 Output Layer   : 1-dimensional (Eg. y)
+
 Learning rate  : 0.9
+
 Regularization parameter : 0.5
 ``` 
 print myNN.predict(X)
