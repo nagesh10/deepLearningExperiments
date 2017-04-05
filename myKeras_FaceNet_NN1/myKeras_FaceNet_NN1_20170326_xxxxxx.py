@@ -1,5 +1,39 @@
 print "myKeras_FaceNet_NN1.py"
 
+# images is an ndarray of min. 2 dimensions
+def resizeImages(images, imRows, imCols):
+
+    print "resizing..."
+
+    # image : rows x cols
+    if (images.ndim==2):
+        newImage = np.zeros((imRows, imCols))
+        newImage = imresize(images, (imRows, imCols))/255.0
+        return newImage
+
+    # image : rows x cols x channels
+    elif (images.ndim==3):
+        newImages = np.zeros((imRows, imCols, images.shape[2]))
+        for ch in range(images.shape[2]):
+            newImage[:,:,ch] = imresize(images[:,:,ch], (imRows, imCols))/255.0
+
+        print "ndims 3"
+        return newImages
+
+    # image : nOfImages x rows x cols x channels
+    elif (images.ndim==4):
+        newImages = np.zeros((images.shape[0], imRows, imCols, images.shape[3]))
+        for i in range(images.shape[0]):
+            for ch in range(images.shape[3]):
+                newImages[i,:,:,ch] = imresize(images[i,:,:,ch], (imRows, imCols))/255.0
+
+        return newImages
+
+    else:
+        print "image dimensions not 2, 3 or 4"
+        return False
+ 
+
 '''
 # Paths
 basePath = os.getcwd()
@@ -30,7 +64,6 @@ newTestImages = resizeImages(testImages, imRows, imCols)
 
 '''
 
-
 import numpy as np
 
 # fix random seed for reproducibility
@@ -53,13 +86,12 @@ from sklearn.metrics import mean_squared_error
 # Save time
 timeStr = time.strftime('%Y%m%d_%H%M%S')
 
-# TODO: KL transform
-# TODO: Covariance Equalization
-
 # imresize
 imRows = 220
 imCols = 220
 imChannels = 3
+newTrainImages = resizeImages(trainImages, imRows, imCols)
+newValImages = resizeImages(valImages, imRows, imCols)
 
 # create model
 

@@ -7,28 +7,28 @@ An implementation of the NN1 net from the [FaceNet](https://arxiv.org/pdf/1503.0
 NN1 net consists of 22 layers:
 - INPUT_DIM       : LAYER  : EXPLANATION  : OUTPUT_DIM
 ---
-- 220 x 220 x   3 : conv1  : 2D convolution, with 64 7x7x3 filters, stride 2, with reLU activation : 110 x 110 x  64
-- 110 x 110 x  64 : pool1  : max pooling, with 64 3x3x64 filters, stride 2 : 55 x 55 x  64
--  55 x  55 x  64 : rnorm1 : (local response normalization) LRN2D : 55 x 55 x  64
--  55 x  55 x  64 : conv2a : 1D convolution, with 64 1x1x64 filters for each pixel (stride 1), with reLU activation : 55 x 55 x  64
--  55 x  55 x  64 : conv2  : 2D convolution, with 192 3x3x64 filters, stride 1, with reLU activation : 55 x 55 x 192
--  55 x  55 x 192 : rnorm2 : (local response normalization) LRN2D : 55 x 55 x 192
--  55 x  55 x 192 : pool2  : max pooling, with 192 3x3x192 filters, stride 2 : 28 x 28 x 192
--  28 x  28 x 192 : conv3a : 1D convolution, with 192 1x1x192 filters for each pixel (stride 1), with reLU activation : 28 x 28 x 192
--  28 x  28 x 192 : conv3  : 2D convolution, with 384 3x3x192 filters, stride 1, with reLU activation :  28 x 28 x 384
--  28 x  28 x 384 : pool3  : max pooling, with 384 3x3x384 filters, stride 2 :  14 x 14 x 384
--  14 x  14 x 384 : conv4a : 1D convolution, with 384 1x1x384 filters for each pixel (stride 1), with reLU activation : 14 x 14 x 384
--  14 x  14 x 384 : conv4  : 2D convolution, with 256 3x3x384 filters, stride 1, with reLU activation :  14 x 14 x 256
--  14 x  14 x 256 : conv5a : 1D convolution, with 256 1x1x256 filters for each pixel (stride 1), with reLU activation : 14 x 14 x 256
--  14 x  14 x 256 : conv5  : 2D convolution, with 256 3x3x256 filters, stride 1, with reLU activation :  14 x 14 x 256
--  14 x  14 x 256 : conv6a : 1D convolution, with 256 1x1x256 filters for each pixel (stride 1), with reLU activation : 14 x 14 x 256
--  14 x  14 x 256 : conv6  : 2D convolution, with 256 3x3x256 filters, stride 1, with reLU activation : 14 x 14 x 256
--  14 x  14 x 256 : pool4  : max pooling, with 384 3x3x256 filters, stride 2    : 7 x 7 x 256
--   7 x   7 x 256 : concat : Flatten : 12544
--           12544 : fc1    : (Fully connected, with maxout) MaxoutDense, with nb_filters 2 : 4096
--            4096 : fc2    : (Fully connected, with maxout) MaxoutDense, with nb_filters 2 : 4096
--            4096 : fc7128 : (Fully connected) Dense : 128
--             128 : L2     : (L2 normalize) Lambda l2_normalize : 128
+- 220 x 220 x   3 : conv1  : 2D convolution, with 64 7x7x3 filters, stride 2, with reLU activation
+- 110 x 110 x  64 : pool1  : max pooling, with 64 3x3x64 filters, stride 2
+-  55 x  55 x  64 : rnorm1 : (local response normalization) LRN2D
+-  55 x  55 x  64 : conv2a : 1D convolution, with 64 1x1x64 filters for each pixel (stride 1), with reLU activation
+-  55 x  55 x  64 : conv2  : 2D convolution, with 192 3x3x64 filters, stride 1, with reLU activation
+-  55 x  55 x 192 : rnorm2 : (local response normalization) LRN2D
+-  55 x  55 x 192 : pool2  : max pooling, with 192 3x3x192 filters, stride 2
+-  28 x  28 x 192 : conv3a : 1D convolution, with 192 1x1x192 filters for each pixel (stride 1), with reLU activation
+-  28 x  28 x 192 : conv3  : 2D convolution, with 384 3x3x192 filters, stride 1, with reLU activation
+-  28 x  28 x 384 : pool3  : max pooling, with 384 3x3x384 filters, stride 2
+-  14 x  14 x 384 : conv4a : 1D convolution, with 384 1x1x384 filters for each pixel (stride 1), with reLU activation
+-  14 x  14 x 384 : conv4  : 2D convolution, with 256 3x3x384 filters, stride 1, with reLU activation
+-  14 x  14 x 256 : conv5a : 1D convolution, with 256 1x1x256 filters for each pixel (stride 1), with reLU activation
+-  14 x  14 x 256 : conv5  : 2D convolution, with 256 3x3x256 filters, stride 1, with reLU activation
+-  14 x  14 x 256 : conv6a : 1D convolution, with 256 1x1x256 filters for each pixel (stride 1), with reLU activation
+-  14 x  14 x 256 : conv6  : 2D convolution, with 256 3x3x256 filters, stride 1, with reLU activation
+-  14 x  14 x 256 : pool4  : max pooling, with 384 3x3x256 filters, stride 2
+-   7 x   7 x 256 : concat : Flatten
+- 12544 : fc1    : (Fully connected, with maxout) MaxoutDense, with nb_filters 2
+- 4096 : fc2    : (Fully connected, with maxout) MaxoutDense, with nb_filters 2
+- 4096 : fc7128 : (Fully connected) Dense
+- 128 : L2     : (L2 normalize) Lambda l2_normalize
 
 The last layer, L2 normalize, is to make the output lie on the unit hypersphere of 128 dimensions.
 
@@ -208,3 +208,6 @@ class MaxoutDense(Layer):
         base_config = super(MaxoutDense, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
 ```
+
+## What is Maxout
+http://colinraffel.com/wiki/maxout_networks

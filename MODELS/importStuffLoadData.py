@@ -230,7 +230,6 @@ def calcCrossEntropy(testImages, testPreds, nbBins=12):
     return testEntropies
 
 
-# images is an ndarray of min. 2 dimensions
 def resizeImages(images, imRows, imCols):
 
     print "resizing..."
