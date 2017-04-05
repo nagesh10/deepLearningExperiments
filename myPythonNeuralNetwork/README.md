@@ -71,7 +71,7 @@ print myNN.predict(X)
 ## References
 - [Machine Learning Mastery's excellent tutorial](https://machinelearningmastery.com/implement-backpropagation-algorithm-scratch-python/)
 
-- [Mattmazur's exmaple](https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/)
+- [Mattmazur's example](https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/)
 
 - [Welch Lab's excellent video playlist on neural networks](https://www.youtube.com/playlist?list=PLiaHhY2iBX9hdHaRr6b7XevZtgZRa1PoU)
 
